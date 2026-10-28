@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<base target="_top">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Attack classes · Expert check</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<style>
+:root{--bg:#f3f5f7;--panel:#fff;--panel2:#eef1f4;--ink:#101d2a;--ink2:#46525e;--ink3:#76828d;--rule:#d7dde3;--acc:#1b5c8c;--acc2:#e3eef7;--ok:#1d7a4c;--warn:#a05a00;color-scheme:light}
+@media (prefers-color-scheme:dark){:root{--bg:#0f1418;--panel:#171e24;--panel2:#1d252c;--ink:#e8eef3;--ink2:#b4bfc9;--ink3:#8995a0;--rule:#2b3640;--acc:#8ab8df;--acc2:#1c2b39;--ok:#5cc08b;--warn:#e2a54a;color-scheme:dark}}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 "IBM Plex Sans",system-ui,-apple-system,"Segoe UI",Arial,sans-serif}
+.wrap{max-width:860px;margin:0 auto;padding:18px 16px 70px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.brand{font:600 12px "IBM Plex Mono",monospace;letter-spacing:.08em;color:var(--ink3)}
+.bar{flex:1 1 220px;height:6px;background:var(--rule);border-radius:3px;overflow:hidden;max-width:360px}
+.bar i{display:block;height:100%;background:var(--acc);transition:width .25s}
+.meta{font:12.5px "IBM Plex Mono",monospace;color:var(--ink3)}
+h1{font-size:27px;line-height:1.15;margin:4px 0 8px;text-wrap:balance}
+h2{font-size:19px;margin:0 0 6px;text-wrap:balance}
+p{margin:0 0 10px;max-width:70ch}
+.muted{color:var(--ink2)}.small{font-size:13px}
+.panel{background:var(--panel);border:1px solid var(--rule);border-radius:10px;padding:18px}
+.stack{display:flex;flex-direction:column;gap:12px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.btn{font:600 15px "IBM Plex Sans",sans-serif;border:none;border-radius:8px;padding:11px 18px;background:var(--acc);color:#fff;cursor:pointer}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn.ghost{background:transparent;color:var(--acc);border:1px solid var(--acc)}
+.btn.small{font-size:13px;padding:7px 12px}
+button:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+select,textarea{font:14px "IBM Plex Sans",sans-serif;padding:8px 10px;border:1px solid var(--rule);border-radius:7px;background:var(--panel);color:var(--ink);max-width:100%}
+textarea{width:100%;min-height:80px}
+label.f{display:block;font-weight:600;font-size:13.5px;margin:10px 0 4px}
+.seg{display:inline-flex;border:1px solid var(--rule);border-radius:7px;overflow:hidden}
+.seg button{border:none;border-right:1px solid var(--rule);background:var(--panel);color:var(--ink2);padding:7px 13px;font:500 14px "IBM Plex Mono",monospace;cursor:pointer}
+.seg button:last-child{border-right:none}
+.seg button[aria-pressed=true]{background:var(--acc);color:#fff}
+.focus{background:var(--panel);border:2px solid var(--acc);border-radius:12px;padding:16px 18px}
+.focus .n{font:600 12px "IBM Plex Mono",monospace;color:var(--acc)}
+.focus b{display:block;font-size:19px;margin:4px 0}
+.focus q{display:block;font-size:17px;line-height:1.45;margin-top:6px;quotes:"“" "”"}
+.opts{display:grid;grid-template-columns:1fr;gap:7px}
+.opt{display:grid;grid-template-columns:44px 1fr;gap:10px;align-items:start;background:var(--panel);border:1px solid var(--rule);border-radius:9px;padding:9px 12px;text-align:left;cursor:pointer;color:inherit;font:inherit}
+.opt:hover{border-color:var(--acc)}
+.opt.picked{border-color:var(--acc);box-shadow:0 0 0 2px var(--acc)}
+.opt .k{font:600 13px "IBM Plex Mono",monospace;color:var(--acc);padding-top:1px}
+.opt b{display:block;font-size:14.5px}
+.opt span{display:block;color:var(--ink2);font-size:13px;line-height:1.35}
+.opt i{display:block;font-style:normal;color:var(--ink3);font-size:12px;line-height:1.3;margin-top:2px}
+.rule{font-size:13px;background:var(--acc2);color:var(--ink);border-radius:8px;padding:8px 12px}
+.alt{display:flex;gap:8px;flex-wrap:wrap}
+.done-big{font-size:42px;line-height:1}
+.ok{color:var(--ok);font-weight:600}.warn{color:var(--warn);font-weight:600}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><span class="brand">EXPERT CHECK · ATTACK CLASSES</span><div class="bar" aria-hidden="true"><i id="bar" style="width:0"></i></div><span class="meta" id="meta"></span></div>
+  <main id="app"></main>
+</div>
+<script>window.STUDY={"id": "BAC-classes-2026", "v": 5, "classes": [["PSV", "Passive", "Only observes or infers; sends nothing into the monitored system.", "nothing (anomaly detection cannot see it)"], ["AML", "Adversarial ML", "Optimised against an ML model: inputs perturbed to change its decision, or training data, labels or updates crafted to corrupt it.", "the model or its learning process"], ["PAY", "Payload", "The content of a single message is crafted, malformed, deceptive or carries foreign content, so the receiver or a user mishandles it.", "valid, typical content for that message type"], ["VOL", "Volume", "The effect comes from the amount, rate, duration or delivery of traffic: too many, too slow, too long or too few. Each message may be valid.", "the expected count, rate or delivery over time"], ["ENM", "Enumeration", "One actor touches abnormally many distinct hosts, ports, credentials, addresses or victims, mostly failing.", "the expected number of distinct values per actor"], ["SPT", "Spoofing & tampering", "A well-formed, plausible message or object asserts something untrue: its sender, route, freshness, reported value, or integrity.", "an independent source of truth the attacker does not control"], ["EBA", "Entity behaviour", "A host, process, device or account acts outside its established behaviour (new peers, external controller, unusual transfers, new privileges or commands, unknown device).", "the entity's own history, its peers, or the asset inventory"]], "anoms": {"A09": ["IoT/OT protocol message flooding", "Flooding devices or brokers with protocol-valid IoT/OT/WSN messages (e.g. MQTT connect/publish, CoAP, Modbus, RPL DIS, Hello flood)."], "A24": ["Fuzzing", "Sending large numbers of random or malformed inputs, messages or identifiers to trigger faults in the receiver (incl. CAN \"fuzzy\" attacks)."], "A32": ["Man-in-the-middle interception", "Inserting oneself into the path between two parties so that their messages are relayed, read or altered while each believes it talks directly to the other."], "A45": ["V2X position / kinematic falsification", "Broadcasting false position, speed or heading in vehicular messages."], "A57": ["Privilege escalation", "Obtaining higher privileges on a host than those granted to the account or process."], "A10": ["CAN bus flooding", "Injecting highest-priority CAN frames (e.g. ID 0x000) continuously so that they win bus arbitration and block other nodes' frames."], "A25": ["SQL injection", "Inserting SQL syntax into application input so that the back-end database executes the attacker's query."], "A33": ["False data injection", "Injecting falsified measurements or state data so that estimation or control acts on a false system state (e.g. power-grid state estimation)."], "A46": ["Energy-consumption falsification", "Manipulating reported meter readings so that recorded consumption differs from actual consumption (energy theft)."], "A58": ["Keylogging / input capture", "Recording a user's keystrokes or input on a host, including through a fake input interface (e.g. a fake screen lock)."], "A11": ["Blackhole (packet dropping)", "A malicious relay node that attracts traffic and drops all packets it should forward."], "A26": ["Cross-site scripting (XSS)", "Injecting client-side script into web content so that other users' browsers execute it."], "A34": ["Replay attack", "Re-sending previously captured valid messages later so that the receiver accepts stale data as current."], "A47": ["Wormhole attack", "Tunnelling packets between two distant colluding nodes so that the network believes they are neighbours, distorting routing."], "A59": ["Rogue device insertion", "Connecting or registering an unauthorised device on a network or control system so that it communicates with legitimate assets."], "A12": ["Grayhole / selective forwarding", "A malicious relay node that drops a selected subset of the packets it should forward."], "A27": ["Malformed-packet attack", "Sending packets that violate the protocol format (e.g. ping of death, teardrop, LAND, malformed MQTT) to crash or confuse the receiver."], "A35": ["ARP spoofing / poisoning", "Sending forged ARP replies that bind the attacker's MAC address to another host's IP address."], "A48": ["Firmware tampering", "Modifying or replacing a device's firmware with unauthorised code."], "A60": ["Covert channel communication", "Hiding communication inside legitimate traffic or data by modulating timing or low-order bits, to carry commands or data unnoticed."], "A13": ["Message delay / suppression", "Deliberately delaying or withholding messages so that they arrive late or not at all."], "A15": ["Password / credential brute forcing", "Repeatedly trying passwords or credential pairs against an authentication service (e.g. SSH, FTP, web login) until one succeeds."], "A28": ["Phishing", "A deceptive message or website that imitates a trusted party to lure a user into revealing credentials or running malicious content."], "A36": ["Data tampering", "Unauthorised modification of data records or messages in storage or transit."], "A49": ["Physical device tampering", "Physically accessing a device or sensor to manipulate it or the data it reports."], "A01": ["SYN flooding", "Sending TCP connection requests (SYN) faster than the target can complete them, exhausting its table of half-open connections."], "A14": ["Jamming", "Emitting radio interference on a channel so that legitimate transmissions cannot be received."], "A16": ["Port scanning", "Probing many ports on one or more hosts to find open services."], "A29": ["Malicious file upload", "Uploading a malicious file (e.g. a web shell or executable) through an application's upload function."], "A37": ["Impersonation / masquerade", "Assuming the identity of a legitimate device, node, ECU or user, e.g. by cloning its identifiers."], "A02": ["HTTP / application-layer flooding", "Sending application requests (e.g. HTTP GET/POST) at high rate to exhaust a server's application resources."], "A17": ["Worm self-propagation", "Malware that copies itself to new hosts by scanning for and exploiting reachable vulnerable victims."], "A30": ["Code injection", "Supplying input that the target executes as code, giving the attacker remote code execution."], "A38": ["CAN signal spoofing", "Injecting CAN frames with legitimate identifiers that carry falsified signal values (e.g. RPM, gear, speed)."], "A50": ["Backdoor remote access", "A covert mechanism (e.g. implant, reverse shell, web shell) that gives the attacker remote access to a host while bypassing normal authentication."], "A03": ["UDP flooding", "Sending UDP datagrams at high rate to exhaust a target's bandwidth or processing."], "A18": ["Network scanning (probe type not specified)", "Systematic probing of hosts or services where the source does not state what was probed."], "A31": ["Protocol tunnelling", "Carrying foreign traffic inside another protocol's fields (e.g. data in DNS queries or HTTP bodies) to bypass controls."], "A39": ["Sensor value spoofing / measurement manipulation", "Altering or forging sensor readings of a physical process (e.g. tank level, flow) without changing the process itself."], "A51": ["Ransomware encryption", "Malware that encrypts victim files at scale and demands payment for the decryption key."], "A04": ["Slow-rate application DoS", "Holding many connections open with deliberately slow or incomplete requests or reads (e.g. Slowloris, slow POST), exhausting connection slots at low traffic rate."], "A19": ["OS fingerprinting", "Sending a set of probes and inferring a host's operating system from the characteristics of its responses."], "A40": ["Sybil attack", "One adversary presenting many fake identities to a distributed system to gain disproportionate influence."], "A52": ["Unauthorised command / set-point injection", "Sending protocol-valid control commands or set-point writes to field devices from a source, or in a context, not authorised to issue them."], "A61": ["Adversarial evasion examples", "Inputs perturbed at inference time (e.g. FGSM, PGD, C&W) so that an ML model misclassifies them while they remain valid inputs."], "A05": ["Flooding (protocol not specified)", "Volumetric flooding of a target where the source does not state the protocol used."], "A20": ["Vulnerability scanning", "Automated probing of hosts for known vulnerabilities (e.g. with Nessus or SATAN)."], "A41": ["DNS spoofing / cache poisoning", "Supplying forged DNS answers so that names resolve to attacker-chosen addresses."], "A53": ["Data exfiltration", "Transferring data from a compromised system to an attacker-controlled destination."], "A62": ["Training-data poisoning", "Injecting or altering training samples or labels (e.g. label flipping, backdoor triggers) to corrupt what a model learns."], "A06": ["ICMP flooding", "Sending ICMP messages (e.g. echo requests) at high rate to exhaust a target's bandwidth or processing."], "A21": ["Host discovery / ping sweep", "Probing a range of addresses (ICMP, TCP or ARP pings) to find which hosts are live."], "A42": ["Deauthentication / disassociation attack", "Sending forged Wi-Fi management frames, apparently from the access point or client, that disconnect legitimate clients."], "A54": ["Command-and-control communication", "Repeated communication between a compromised host and an external controller to receive commands or report status (incl. beaconing)."], "A63": ["Federated model poisoning", "Malicious federated-learning clients submitting manipulated model updates or gradients to corrupt the global model."], "A07": ["TCP flooding (non-SYN or unspecified flags)", "Sending TCP segments with ACK, PSH-ACK, RST/FIN or unspecified flag combinations at high rate to exhaust a target or middlebox."], "A22": ["Service / version / device scanning", "Probing open services to identify their software versions, banners or device identities (incl. ICS device identification)."], "A43": ["IP address spoofing", "Sending packets with a forged source IP address."], "A55": ["Lateral movement", "Using a compromised internal host, remote services or stolen credentials to gain access to further internal hosts."], "A64": ["Eavesdropping / traffic sniffing", "Passively intercepting and reading communications without sending anything into them."], "A08": ["Reflection / amplification flooding", "Sending requests with the victim's spoofed address to third-party servers (e.g. DNS, NTP, SSDP, memcached), whose larger replies flood the victim."], "A23": ["MAC flooding (CAM-table overflow)", "Sending frames with many forged source MAC addresses until a switch's address table overflows and it forwards traffic to all ports."], "A44": ["Sinkhole / routing manipulation", "Advertising false routes, ranks or versions so that traffic is attracted to, or diverted through, an attacker-chosen node."], "A56": ["Ingress tool transfer", "Downloading attacker tools or payloads onto a compromised host."], "A65": ["Model privacy attacks", "Inferring confidential training data or membership, or reconstructing a model, from its outputs, gradients or updates (membership inference, model inversion, gradient leakage)."]}, "sets": {"S01": ["A09", "A24", "A32", "A45", "A57"], "S02": ["A10", "A25", "A33", "A46", "A58"], "S03": ["A11", "A26", "A34", "A47", "A59"], "S04": ["A12", "A27", "A35", "A48", "A60"], "S05": ["A13", "A15", "A28", "A36", "A49"], "S06": ["A01", "A14", "A16", "A29", "A37"], "S07": ["A02", "A17", "A30", "A38", "A50"], "S08": ["A03", "A18", "A31", "A39", "A51"], "S09": ["A04", "A19", "A40", "A52", "A61"], "S10": ["A05", "A20", "A41", "A53", "A62"], "S11": ["A06", "A21", "A42", "A54", "A63"], "S12": ["A07", "A22", "A43", "A55", "A64"], "S13": ["A08", "A23", "A44", "A56", "A65"]}, "roles": ["SOC / security analyst", "Detection engineer / threat hunter", "Incident responder / DFIR", "Threat intelligence analyst", "Security architect / engineer", "Red team / penetration tester", "OT/ICS or CPS security", "Researcher (security)", "Researcher (ML/AI security)", "Other"], "years": ["Less than 2", "2–4", "5–9", "10–14", "15 or more"]};window.STUDY.assigned=/*SETS*/null;window.STUDY.submitUrl='PASTE_WEB_APP_URL_HERE';</script>
+<script>
+(function(){
+var C = window.STUDY;
+var KEY = 'bac-classes-v5';
+var app = document.getElementById('app');
+function el(t, a){ var e=document.createElement(t); a=a||{}; for(var k in a){ var v=a[k]; if(v==null||v===false) continue; if(k==='class') e.className=v; else if(k==='text') e.textContent=v; else if(k.slice(0,2)==='on') e.addEventListener(k.slice(2),v); else e.setAttribute(k, v===true?'':v); }
+  for(var i=2;i<arguments.length;i++){ var c=arguments[i]; if(c==null) continue; if(Array.isArray(c)) c.forEach(function(x){ if(x!=null) e.append(x.nodeType?x:document.createTextNode(x)); }); else e.append(c.nodeType?c:document.createTextNode(c)); } return e; }
+function rid(){ var a='ABCDEFGHJKLMNPQRSTUVWXYZ23456789', s='', r=new Uint32Array(6); crypto.getRandomValues(r); for(var i=0;i<6;i++) s+=a[r[i]%a.length]; return s; }
+function shuffle(arr){ var a=arr.slice(); for(var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=a[i]; a[i]=a[j]; a[j]=t; } return a; }
+var S=null; try{ S=JSON.parse(localStorage.getItem(KEY)||'null'); }catch(e){}
+if(!S) S={pid:rid(), consent:false, profile:{}, stage:'intro', used:[]};
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} }
+function setBar(x){ document.getElementById('bar').style.width=Math.round(x*100)+'%'; }
+function meta(t){ document.getElementById('meta').textContent=t||''; }
+var SK=Object.keys(C.sets);
+
+// ------- set assignment: URL (?s=S01,S07) > server (least-completed) > random
+function randomSets(n, avoid){ return shuffle(SK.filter(function(k){ return (avoid||[]).indexOf(k)<0; })).slice(0,n); }
+function urlSets(){ try{ var v=new URLSearchParams(location.search).get('s'); if(!v) return null; var x=v.split(',').filter(function(k){ return C.sets[k]; }); return x.length===2&&x[0]!==x[1]?x:null; }catch(e){ return null; } }
+function valid(x,n){ return Array.isArray(x)&&x.length===n&&x.every(function(k){ return C.sets[k]; }); }
+function getSets(n, avoid, cb){
+  var fin=function(x){ cb(valid(x,n)?x:randomSets(n,avoid)); };
+  if(n===2){ var u=urlSets(); if(u) return cb(u); if(valid(C.assigned,2)) return cb(C.assigned); }
+  if(window.google&&google.script&&google.script.run){ google.script.run.withSuccessHandler(fin).withFailureHandler(function(){ fin(null); }).nextSets(n, avoid||[]); return; }
+  if(C.submitUrl&&/^https:/.test(C.submitUrl)){ var done=false; var to=setTimeout(function(){ if(!done){ done=true; fin(null); } },3000);
+    fetch(C.submitUrl+'?action=next&n='+n+'&avoid='+encodeURIComponent((avoid||[]).join(','))).then(function(r){ return r.json(); }).then(function(x){ if(!done){ done=true; clearTimeout(to); fin(x.sets); } }).catch(function(){ if(!done){ done=true; clearTimeout(to); fin(null); } }); return; }
+  fin(null);
+}
+function begin(kind, sets){
+  S.kind=kind; S.sets=sets; S.used=(S.used||[]).concat(sets);
+  S.ord=shuffle([].concat.apply([], sets.map(function(k){ return C.sets[k]; })));
+  S.ans={}; S.i=0; S.t0=Date.now(); S.stage='A'; save(); block();
+}
+
+function start(){
+  if(S.stage==='thanks') return thanks();
+  if(!S.consent) return intro();
+  if(S.stage==='A') return block();
+  if(S.stage==='end') return endPage();
+  return intro();
+}
+function intro(){
+  setBar(0); meta('');
+  var P=S.profile; app.textContent='';
+  var roles=C.roles.map(function(r){ return el('option',{value:r,selected:P.role===r},r); });
+  var yrs=C.years.map(function(r){ return el('option',{value:r,selected:P.years===r},r); });
+  var exp=el('div',{class:'seg',role:'group','aria-label':'Familiarity'});
+  [1,2,3,4,5].forEach(function(n){ exp.append(el('button',{type:'button','aria-pressed':String(P.expertise===n),onclick:function(){ P.expertise=n; P.role=document.getElementById('role').value; P.years=document.getElementById('years').value; save(); intro(); }},String(n))); });
+  var cb=el('input',{type:'checkbox',id:'consent'});
+  var msg=el('p',{class:'warn small',role:'alert'});
+  var go=el('button',{class:'btn',type:'button',onclick:function(){
+    P.role=document.getElementById('role').value; P.years=document.getElementById('years').value;
+    if(!P.role||!P.years||!P.expertise){ msg.textContent='Please answer the three questions above.'; return; }
+    if(!cb.checked){ msg.textContent='Please tick the box to continue.'; return; }
+    go.disabled=true; msg.textContent=''; S.consent=true; save();
+    getSets(2, [], function(x){ begin('main', x); });
+  }},'Start');
+  app.append(el('div',{class:'stack'},
+    el('h1',{},'Which class does each attack belong to?'),
+    el('p',{class:'muted'},'From 459 research papers (2024–2026) we grouped 65 attack behaviours into seven classes, by what a detector must compare them against to notice them. Please place 10 attacks into these classes, so we can check whether others assign them as we did. About 3–4 minutes. There are no right or wrong answers: we want your judgement.'),
+    el('div',{class:'panel stack'},
+      el('div',{},el('label',{class:'f',for:'role'},'Your main role'),el('select',{id:'role'},el('option',{value:''},'Choose…'),roles)),
+      el('div',{},el('label',{class:'f',for:'years'},'Years in security'),el('select',{id:'years'},el('option',{value:''},'Choose…'),yrs)),
+      el('div',{},el('label',{class:'f'},'Your familiarity with attack detection (1 basic, 5 expert)'),exp),
+      el('label',{class:'small',style:'display:flex;flex-wrap:nowrap;align-items:flex-start;gap:8px;margin-top:6px'},cb,el('span',{},'I am 18 or older and agree to take part. No name, email or IP address is collected; answers are reported only in aggregate and may be shared as an anonymised dataset.')),
+      msg, el('div',{},go))));
+}
+function block(){
+  var ids=S.ord; app.textContent='';
+  if(S.i>=ids.length){ if(S.kind==='main'){ S.stage='end'; save(); return endPage(); } return submit(); }
+  var id=ids[S.i], c=C.anoms[id], cur=(S.ans[id]||{}).c; var t0=Date.now();
+  setBar(S.i/(ids.length+(S.kind==='main'?1:0))); meta((S.kind==='main'?'':'Extra · ')+(S.i+1)+' / '+ids.length);
+  function pick(v){ var prev=S.ans[id]; S.ans[id]={c:v,ms:(prev&&prev.ms||0)+(Date.now()-t0)}; S.i++; save(); block(); }
+  app.append(el('div',{class:'stack'},
+    el('div',{class:'focus'},el('span',{class:'n'},'ATTACK '+(S.i+1)+' OF '+ids.length),el('b',{},c[0]),el('span',{class:'muted'},c[1])),
+    el('div',{class:'rule'},el('b',{},'Which class? '),'If two classes fit, choose the one higher in this list.'),
+    el('div',{class:'opts'}, C.classes.map(function(o){ return el('button',{type:'button',class:'opt'+(cur===o[0]?' picked':''),onclick:function(){ pick(o[0]); }},el('span',{class:'k'},o[0]),el('div',{},el('b',{},o[1]),el('span',{},o[2]),el('i',{},'Compared with: '+o[3]))); })),
+    el('div',{class:'alt'},
+      el('button',{class:'btn ghost small',type:'button',onclick:function(){ pick('NONE'); }},'None fits'),
+      el('button',{class:'btn ghost small',type:'button',onclick:function(){ pick('UNSURE'); }},'Not sure'),
+      el('button',{class:'btn ghost small',type:'button',disabled:S.i===0,onclick:function(){ S.i--; save(); block(); }},'← Back'))));
+  window.scrollTo(0,0);
+}
+function endPage(){
+  setBar(0.95); meta('Last step'); app.textContent='';
+  app.append(el('div',{class:'stack'},el('h2',{},'Anything to add? (optional)'),
+    el('div',{class:'panel stack'},el('label',{class:'f',for:'cm'},'For example, a class definition that is unclear, an attack that fits two classes, or a class that is missing.'),
+      el('textarea',{id:'cm',oninput:function(e){ S.comment=e.target.value; save(); }},S.comment||'')),
+    el('div',{class:'row'},el('button',{class:'btn ghost',type:'button',onclick:function(){ S.stage='A'; S.i=S.ord.length-1; save(); block(); }},'← Back'),
+      el('button',{class:'btn',type:'button',onclick:submit},'Submit'))));
+  window.scrollTo(0,0);
+}
+function thanks(){
+  setBar(1); meta(''); app.textContent='';
+  var left=SK.filter(function(k){ return (S.used||[]).indexOf(k)<0; });
+  var more=el('button',{class:'btn',type:'button',onclick:function(){ more.disabled=true; getSets(1, S.used, function(x){ begin('extra', x); }); }},'5 more attacks (≈1 min)');
+  app.append(el('div',{class:'panel stack'},el('div',{class:'done-big ok'},'✓'),el('h2',{},'Thank you, your answers are saved.'),
+    el('p',{class:'muted'},left.length?'That is all. If you have one more minute, you can place 5 more attacks. Otherwise, simply close this page.':'That is all. You can close this page.'),
+    left.length?el('div',{class:'row'},more):null));
+}
+function payload(){
+  var p={study:C.id,v:C.v,pid:S.pid,block:S.kind,profile:S.profile,sets:S.sets,
+    a:S.ord.map(function(id){ var r=S.ans[id]||{}; return {id:id,c:r.c||null,ms:r.ms||0}; }),t:{start:S.t0,end:Date.now()}};
+  if(S.kind==='main') p.comment=S.comment||'';
+  return p;
+}
+function submit(){
+  var json=JSON.stringify(payload());
+  app.textContent=''; setBar(1); meta('Saving…');
+  app.append(el('div',{class:'panel stack'},el('div',{class:'done-big',text:'…'}),el('p',{class:'muted'},'Saving your answers…')));
+  function ok(){ S.stage='thanks'; save(); thanks(); }
+  function fallback(){ var code='ANOMSTUDY5:'+btoa(unescape(encodeURIComponent(json)));
+    app.textContent=''; meta('');
+    var ta=el('textarea',{readonly:true,id:'code',style:'min-height:120px;font:11.5px "IBM Plex Mono",monospace'},code);
+    app.append(el('div',{class:'panel stack'},el('h2',{},'We could not save automatically'),el('p',{},'Please copy this code and send it to the researcher who invited you.'),ta,
+      el('div',{class:'row'},el('button',{class:'btn',type:'button',onclick:function(){ if(navigator.clipboard) navigator.clipboard.writeText(code).catch(function(){ ta.select(); }); else ta.select(); }},'Copy code'),
+        el('button',{class:'btn ghost',type:'button',onclick:ok},'Continue'))));
+  }
+  if(window.google&&google.script&&google.script.run){ google.script.run.withSuccessHandler(ok).withFailureHandler(fallback).submitResponse(json); }
+  else if(C.submitUrl&&/^https:/.test(C.submitUrl)){
+    fetch(C.submitUrl,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:json}).then(function(r){ return r.text(); })
+      .then(function(t){ if(/"ok":true/.test(t)) ok(); else fallback(); }).catch(fallback);
+  } else fallback();
+}
+start();
+})();
+</script>
+</body>
+</html>
